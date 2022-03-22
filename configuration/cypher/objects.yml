@@ -1,0 +1,58 @@
+objects:
+  get_object:
+    query: >
+      MATCH (o:`$$APPLICATION$$`)
+      WHERE ID(o)=$id
+      RETURN o as object
+    params:
+      - id
+    anchors:
+      - APPLICATION
+    return:
+      - object
+
+  get_object_level:
+    query: >
+      MATCH (o:`$$APPLICATION$$`:Object)
+      WHERE ID(o)=$id
+      RETURN o.Level as level
+    params:
+      - id
+    anchors:
+      - APPLICATION
+    return:
+      - level
+
+  get_object_complexity:
+    query: >
+      MATCH (o)-[r]->(objp:ObjectProperty)
+      WHERE ID(o)=$id AND objp.Description=$complexity
+      RETURN r.value as value LIMIT 1
+    params:
+      - id
+      - complexity
+    return:
+      - value
+
+  get_object_property:
+    query: >
+      MATCH (o)-[r]->(objp:ObjectProperty)
+      WHERE ID(o)=$id AND objp.Description=$property
+      RETURN r.value as value LIMIT 1
+    params:
+      - id
+      - property
+    return:
+      - value
+
+  get_objects_by_type:
+    query: >
+      MATCH (o:`$$APPLICATION$$`)
+      WHERE o.Type=$type
+      RETURN o as object
+    params:
+      - type
+    anchors:
+      - APPLICATION
+    return:
+      - object

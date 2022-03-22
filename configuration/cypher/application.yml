@@ -1,0 +1,17 @@
+applications:
+
+  application_list:
+    query: >
+      MATCH (n:Application)
+      RETURN DISTINCT n.Name as name
+    return:
+      - name
+
+  get_by_name:
+    query: >
+      MATCH (n:Application) WHERE n.Name=$application_name
+      RETURN DISTINCT n as application
+    params:
+      - application_name
+    return:
+      - application

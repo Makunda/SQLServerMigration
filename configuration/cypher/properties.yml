@@ -1,0 +1,50 @@
+properties:
+  apply_property_as_list:
+    query: >
+      MATCH (o)
+      WHERE ID(o)=$node_id
+      SET o.`$$PROPERTY_NAME$$` = CASE WHEN o.`$$PROPERTY_NAME$$` IS NULL THEN [$value] ELSE [ x in o.`$$PROPERTY_NAME$$` WHERE NOT x=$value ] + $value END
+      RETURN o as object
+    params:
+      - value
+      - node_id
+    anchors:
+      - PROPERTY_NAME
+    return:
+      - object
+
+  get_objects_by_exist_property:
+    query: >
+      MATCH (o:`$$APPLICATION$$`:Object)
+      WHERE o.`$$PROPERTY_NAME$$` IS NOT NULL
+      RETURN DISTINCT o as object
+    anchors:
+      - APPLICATION
+      - PROPERTY_NAME
+    return:
+      - object
+
+  get_property:
+    query: >
+      MATCH (o)
+      WHERE ID(o)=$node_id
+      RETURN o.`$$PROPERTY_NAME$$` as property
+    params:
+      - node_id
+    anchors:
+      - PROPERTY_NAME
+    return:
+      - property
+
+  add_property:
+    query: >
+      MATCH (o)
+      WHERE ID(o)=$node_id
+      SET o.`$$PROPERTY_NAME$$` = $property
+    params:
+      - node_id
+      - property
+    anchors:
+      - PROPERTY_NAME
+    return:
+      - property

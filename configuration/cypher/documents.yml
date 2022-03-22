@@ -1,0 +1,133 @@
+
+documents:
+
+  document_creation:
+    query: >
+      MERGE (o:Document:`$$APPLICATION$$` {
+        Title: $title,
+        Description: $description,
+        ViewID: "",
+        ViewType: "Object",
+        Theme: 12
+      })
+      SET o.Id = CASE WHEN o.Id IS NULL THEN $id ELSE o.Id END
+      SET o.Tags = CASE WHEN o.Tags IS NULL THEN [] ELSE o.Id END
+      SET o.ViewName = CASE WHEN o.ViewName IS NULL THEN "" ELSE o.ViewName END
+      SET o.Nodes = CASE WHEN o.Nodes IS NULL THEN [] ELSE o.Nodes END
+      RETURN o as document
+    params:
+      - title
+      - description
+      - id
+    anchors:
+      - APPLICATION
+    return:
+      - document
+
+  document_link_to_object:
+    query: >
+      MATCH (o:`$$APPLICATION$$`) WHERE ID(o)=$node_id
+      WITH o
+      MATCH (d:Document:`$$APPLICATION$$`) WHERE ID(d)=$document_id
+      SET d.Nodes = CASE WHEN d.Nodes IS NULL THEN [o.AipId] ELSE [ x in d.Nodes WHERE NOT x=o.AipId ] + o.AipId END
+      WITH o, d
+      MERGE (o)-[:ContainsDocument]->(d)
+      RETURN d as document
+    params:
+      - document_id
+      - node_id
+    anchors:
+      - APPLICATION
+    return:
+      - document
+
+  document_link_to_aip_object:
+    query: >
+      MATCH (o:`$$APPLICATION$$`) WHERE o.AipId=$node_aipId
+      WITH o
+      MATCH (d:Document:`$$APPLICATION$$`) WHERE ID(d)=$document_id
+      WITH o, d
+      MERGE (o)-[:ContainsDocument]->(d)
+      SET d.Nodes = CASE WHEN d.Nodes IS NULL THEN [o.AipId] ELSE [ x in d.Nodes WHERE NOT x=o.AipId ] + o.AipId END
+      RETURN d as document
+    params:
+      - document_id
+      - node_aipId
+    anchors:
+      - APPLICATION
+    return:
+      - document
+
+  get_unuploaded:
+    query: >
+      MATCH (d:Document)
+      WHERE NOT $uploaded_tag IN d.Tags AND d.Title STARTS WITH $title_prefix
+      RETURN d as document
+    params:
+      - title_prefix
+      - uploaded_tag
+    return:
+      - document
+
+  get_objects:
+    query: >
+      MATCH (d:Document)<-[:ContainsDocument]-(o:Object)
+      WHERE ID(d)=$document_id
+      RETURN DISTINCT o as object
+    anchors:
+      - APPLICATION
+    return:
+      - object
+
+  set_uploaded:
+    query: >
+      MATCH (d:Document)
+      WHERE ID(d)=$document_id
+      SET d.Tags = [ x in d.Tags WHERE NOT ( x=$upload_tag OR x="Pending") ] + $upload_tag
+      SET d.Title = REPLACE(d.Title, $upload_prefix, $uploaded_prefix)
+      RETURN d as document
+    params:
+      - document_id
+      - upload_tag
+      - uploaded_prefix
+      - upload_prefix
+    return:
+      - document
+
+  set_pending:
+    query: >
+      MATCH (d:Document:`$$APPLICATION$$`)
+      WHERE ID(d)=$document_id
+      SET d.Tags = [ x in d.Tags WHERE NOT x="Pending" ] + "Pending"
+      RETURN d as document
+    params:
+      - document_id
+    anchors:
+      - APPLICATION
+    return:
+      - document
+
+  set_title:
+    query: >
+      MATCH (d:Document:`$$APPLICATION$$`)
+      WHERE ID(d)=$document_id
+      SET d.Title=$title
+      RETURN d as document
+    params:
+      - document_id
+      - title
+    anchors:
+      - APPLICATION
+    return:
+      - document
+
+  get_title_starts_with:
+    query: >
+      MATCH (o:Document:`$$APPLICATION$$`) WHERE o.Title STARTS WITH $prefix
+      RETURN o as document
+    params:
+      - prefix
+    anchors:
+      - APPLICATION
+    return:
+      - document

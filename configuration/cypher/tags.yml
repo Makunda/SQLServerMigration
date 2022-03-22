@@ -1,0 +1,53 @@
+tags:
+  create_by_aipid:
+    query: >
+      MATCH (o:`$$APPLICATION$$`)
+      WHERE o.AipId=$aipId
+      SET o.Tags = CASE WHEN o.Tags IS NULL THEN [$tag] ELSE [ x in o.Tags WHERE NOT x=$tag ] + $tag END
+      RETURN o as object
+    params:
+      - tag
+      - aipId
+    anchors:
+      - APPLICATION
+    return:
+      - object
+
+  create_by_id:
+    query: >
+      MATCH (o:`$$APPLICATION$$`)
+      WHERE ID(o)=$id
+      SET o.Tags = CASE WHEN o.Tags IS NULL THEN [$tag] ELSE [ x in o.Tags WHERE NOT x=$tag ] + $tag END
+      RETURN o as object
+    params:
+      - tag
+      - id
+    anchors:
+      - APPLICATION
+    return:
+      - object
+
+  get_tags_per_application:
+    query: >
+      MATCH (o:`$$APPLICATION$$`)
+      WHERE (o:Object OR o:SubObject) AND EXISTS(o.Tags)
+      UNWIND o.Tags as tag WITH tag
+      WHERE tag STARTS WITH $prefix
+      RETURN DISTINCT tag as tag
+    params:
+      - prefix
+    anchors:
+      - APPLICATION
+    return:
+      - tag
+
+  get_tagged_object:
+    query: >
+      MATCH (o:Object:`$$APPLICATION$$`) WHERE $tag IN o.Tags
+      RETURN DISTINCT o as node
+    params:
+      - tag
+    anchors:
+      - APPLICATION
+    return:
+      - node
