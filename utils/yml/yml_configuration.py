@@ -23,7 +23,7 @@ class YMLConfiguration(metaclass=SingletonMeta):
         super().__init__()
         self.__logger = Logger.get_logger("YML Configuration")
         self.__configuration = dict()
-        self.__neo4j_al = Neo4jAl()
+        self._neo4j_al = Neo4jAl()
 
         # List and load files
         files = self.__list_file()

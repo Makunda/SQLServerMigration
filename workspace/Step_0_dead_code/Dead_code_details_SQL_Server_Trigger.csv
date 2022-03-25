@@ -1,0 +1,3 @@
+Name,Full Name,Object Type,Internal Type,Level,File Path,Line of code,Cyclomatic Complexity,Essential Complexity
+rds_deny_backups_trigger,EHC_Infrastructure.dbo.rds_deny_backups_trigger,SQL Server Trigger,SQLScriptTrigger,SQL Server Trigger,C:\ProgramData\CAST\AipConsole\AipNode\deploy\Project Modern Cardinal\main_sources\DDL\EHC_Infrastructure.sql,30,1,2
+rds_deny_backups_trigger,EHC.dbo.rds_deny_backups_trigger,SQL Server Trigger,SQLScriptTrigger,SQL Server Trigger,C:\ProgramData\CAST\AipConsole\AipNode\deploy\Project Modern Cardinal\main_sources\DDL\EHC.sql,30,1,2

@@ -1,0 +1,8 @@
+Name,Full Name,Object Type,Internal Type,Level,File Path,Line of code,Cyclomatic Complexity,Essential Complexity
+ColumnDefaults_SetAll,EHC.Meta.ColumnDefaults_SetAll,SQL Server Procedure,SQLScriptProcedure,SQL Server Procedure,C:\ProgramData\CAST\AipConsole\AipNode\deploy\Project Modern Cardinal\main_sources\DDL\EHC.sql,47,1,1
+PrimaryKeys_NormalizeNames,EHC.Meta.PrimaryKeys_NormalizeNames,SQL Server Procedure,SQLScriptProcedure,SQL Server Procedure,C:\ProgramData\CAST\AipConsole\AipNode\deploy\Project Modern Cardinal\main_sources\DDL\EHC.sql,48,1,2
+webpages_Roles_Add,EHC.dbo.webpages_Roles_Add,SQL Server Procedure,SQLScriptProcedure,SQL Server Procedure,C:\ProgramData\CAST\AipConsole\AipNode\deploy\Project Modern Cardinal\main_sources\DDL\EHC.sql,20,1,1
+ColumnDefaults_SetAll,EHC_Infrastructure.Meta.ColumnDefaults_SetAll,SQL Server Procedure,SQLScriptProcedure,SQL Server Procedure,C:\ProgramData\CAST\AipConsole\AipNode\deploy\Project Modern Cardinal\main_sources\DDL\EHC_Infrastructure.sql,49,1,1
+Account_CustomField_AddUpdate,EHC.Account.Account_CustomField_AddUpdate,SQL Server Procedure,SQLScriptProcedure,SQL Server Procedure,C:\ProgramData\CAST\AipConsole\AipNode\deploy\Project Modern Cardinal\main_sources\DDL\EHC.sql,12,1,1
+User_AssociateLogin,EHC_Infrastructure.Utility.User_AssociateLogin,SQL Server Procedure,SQLScriptProcedure,SQL Server Procedure,C:\ProgramData\CAST\AipConsole\AipNode\deploy\Project Modern Cardinal\main_sources\DDL\EHC_Infrastructure.sql,29,1,2
+PrimaryKeys_NormalizeNames,EHC_Infrastructure.Meta.PrimaryKeys_NormalizeNames,SQL Server Procedure,SQLScriptProcedure,SQL Server Procedure,C:\ProgramData\CAST\AipConsole\AipNode\deploy\Project Modern Cardinal\main_sources\DDL\EHC_Infrastructure.sql,48,1,2

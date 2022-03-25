@@ -1,4 +1,5 @@
 from logger import Logger
+from migration.orchestrator import Orchestrator
 
 
 def main():
@@ -9,6 +10,9 @@ def main():
     # Logger
     logger = Logger.get_logger("Main Logic")
     logger.info("Starting program...")
+
+    orchestrator = Orchestrator()
+    orchestrator.launch()
 
 
 if __name__ == '__main__':

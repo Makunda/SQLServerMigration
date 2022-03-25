@@ -11,6 +11,10 @@ from utils.folder.folder_utils import FolderUtils
 class YMLFolderReader:
 
     def __init__(self, file_path: str):
+        # Verify the path
+        if not FolderUtils.exists(file_path):
+            raise FileNotFoundError("Cannot instantiate the YML Folder reader on a non-existent folder")
+
         self.__logger = Logger.get_logger("YAML Folder reader")
         self.__query_folder = os.path.join(ROOT_DIR, file_path)
 
@@ -57,6 +61,7 @@ class YMLFolderReader:
         if not yaml_content:  # If the yaml_content is empty  / none
             return
 
+        loaded_sections = 0
         # Parse the configuration and build the list
         for section_name in yaml_content.keys():
             try:
@@ -73,9 +78,12 @@ class YMLFolderReader:
                     self.__logger.warning("Sections {0} already exist and will be overloaded.".format(section_name))
 
                 self.__content[section_name].update(yaml_content[section_name])
+                loaded_sections += 1
 
             except Exception as e:
                 self.__logger.error("Sections {0} has been ignored.".format(section_name), e)
+
+        self.__logger.info("Sections {0} has been discovered.".format(loaded_sections))
 
     def get_full_content(self) -> Any:
         """
@@ -84,11 +92,16 @@ class YMLFolderReader:
         """
         # List all the files
         files = self.__list_file()
+        self.__logger.info("{} files discovered at '{}'.".format(len(files), self.__query_folder))
 
         # List all content
         for f in files:
             # Get content
             yaml_content = self.__get_yml_content(f)
+
+            if not yaml_content:  # If the yaml_content is empty  / none
+                self.__logger.warning("File '{0}' is empty.".format(f))
+
             self.__merge_content(yaml_content)
 
         return self.__content

@@ -1,0 +1,32 @@
+communities:
+  get_communities_above:
+    query: >
+      MATCH (o:Object:`$$APPLICATION$$`)
+      WHERE o.`$$PROPERTY$$` IS NOT NULL
+      WITH  DISTINCT o.`$$PROPERTY$$` as com_section, COUNT(DISTINCT o) as com_size , COLLECT(o) as nodes
+      WHERE com_size >= $communitySize
+      UNWIND nodes as o
+      return o as object
+    params:
+      - communitySize
+    anchors:
+      - APPLICATION
+      - PROPERTY
+    return:
+      - object
+
+  get_communities_below:
+    query: >
+      MATCH (o:Object:`$$APPLICATION$$`)
+      WHERE o.`$$PROPERTY$$` IS NOT NULL
+      WITH  DISTINCT o.`$$PROPERTY$$` as com_section, COUNT(DISTINCT o) as com_size , COLLECT(o) as nodes
+      WHERE com_size < $communitySize
+      UNWIND nodes as o
+      return o as object
+    params:
+      - communitySize
+    anchors:
+      - APPLICATION
+      - PROPERTY
+    return:
+      - object

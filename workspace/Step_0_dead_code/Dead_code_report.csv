@@ -1,0 +1,7 @@
+Object Type,Total Object,Total Unused Object,Ratio
+SQL Server Procedure,574,7,1.2195121951219512
+SQL Server Function,260,14,5.384615384615385
+SQL Server Table,400,16,4.0
+SQL Server View,74,2,2.7027027027027026
+SQL Server Trigger,6,2,33.33333333333333
+SQL Server SQL Script,1,1,100.0

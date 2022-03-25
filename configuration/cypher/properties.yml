@@ -48,3 +48,26 @@ properties:
       - PROPERTY_NAME
     return:
       - property
+
+  clean_property_by_value:
+    query: >
+      MATCH (o:`$$APPLICATION$$`:Object)
+      WHERE o.`$$PROPERTY_NAME$$` = $propertyValue
+      REMOVE o.`$$PROPERTY_NAME$$`
+    params:
+      - propertyValue
+    anchors:
+      - APPLICATION
+      - PROPERTY_NAME
+
+  add_property_by_type:
+    query: >
+      MATCH (o:`$$APPLICATION$$`:Object)
+      WHERE ANY(x in $objectTypes WHERE o.Type CONTAINS x)
+      SET o.`$$PROPERTY_NAME$$` = $propertyValue
+    params:
+      - objectTypes
+      - propertyValue
+    anchors:
+      - APPLICATION
+      - PROPERTY_NAME

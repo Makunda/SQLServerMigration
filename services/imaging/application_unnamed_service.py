@@ -21,10 +21,10 @@ class ApplicationUnnamedService(AbstractImagingService):
         :return: The list of application name
         """
         # Get the query to link an aip object
-        query = self._query_service.get_query("applications", "application_list")
+        query = self.query_service.get_query("applications", "application_list")
 
         # Execute
-        return self._neo4j_al.execute(query)
+        return self.neo4j_al.execute(query)
 
     def get_application_node(self, name: str) -> Node or None:
         """
@@ -32,13 +32,13 @@ class ApplicationUnnamedService(AbstractImagingService):
         :return: The application node, return None if not found
         """
         # Get the query to link an aip object
-        query = self._query_service.get_query("applications", "get_by_name")
+        query = self.query_service.get_query("applications", "get_by_name")
         params = {
             "application_name": name
         }
 
         # Execute
-        res = self._neo4j_al.execute(query, params)
+        res = self.neo4j_al.execute(query, params)
         if len(res) >= 1:
             return res[0]
         else:

@@ -1,0 +1,2 @@
+Name,Full Name,Object Type,Internal Type,Level,File Path,Line of code,Cyclomatic Complexity,Essential Complexity
+Module.sql,[C:\ProgramData\CAST\AipConsole\AipNode\deploy\Project Modern Cardinal\main_sources\Configurations-Scripts-Sources\EHC.Application\Data\Databases\Core\PostDeployment\Application\Module.sql].Module.sql,SQL Server SQL Script,SQLScriptDML,SQL Server SQL Script,C:\ProgramData\CAST\AipConsole\AipNode\deploy\Project Modern Cardinal\main_sources\Configurations-Scripts-Sources\EHC.Application\Data\Databases\Core\PostDeployment\Application\Module.sql,0,0,0

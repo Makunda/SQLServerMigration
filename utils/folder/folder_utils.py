@@ -26,6 +26,17 @@ class FolderUtils:
             os.makedirs(path)
             logging.info("New folder created at: {0}.".format(path))
 
+
+    @staticmethod
+    def merge_file(file_path: str):
+        """
+        Check a folder and create it if necessary
+        :param file_path: Path of the file to create
+        :return:
+        """
+        # Check whether the specified path exists or not
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+
     @staticmethod
     def get_folder_checksum(path: str):
         """

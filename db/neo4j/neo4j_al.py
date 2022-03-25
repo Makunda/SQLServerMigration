@@ -24,18 +24,25 @@ class Neo4jAl(metaclass=SingletonMeta):
         self.__logger = Logger.get_logger("Neo4j Access Layer")
 
         # Read imaging configuration
-        url = str(self.__config.get_value("neo4j", "bolt_url"))
+        self.__url = str(self.__config.get_value("neo4j", "bolt_url"))
         username = str(self.__config.get_value("neo4j", "username"))
         password = str(self.__config.get_value("neo4j", "password"))
         encryption = str(self.__config.get_value("neo4j", "encryption")) == 'True'
 
-        logging.info("Connecting to Neo4j Database : {0} (Encryption: {1} )".format(url, encryption))
+        logging.info("Connecting to Neo4j Database : {0} (Encryption: {1} )".format(self.__url, encryption))
         # Init connection
         try:
-            self.__graph_database = GraphDatabase.driver(url, auth=(username, password), encrypted=encryption)
+            self.__graph_database = GraphDatabase.driver(self.__url, auth=(username, password), encrypted=encryption)
         except Exception as e:
             self.__logger.error("Failed to connect to the remote Neo4j database...", e)
-            raise ConnectionError("Failed to connect to {0}".format(url))
+            raise ConnectionError("Failed to connect to {0}".format(self.__url))
+
+    def get_url(self) -> str:
+        """
+        Get the URL of the server
+        :return:
+        """
+        return self.__url
 
     def __query_builder(self, query: CypherQuery, params: dict):
         """
@@ -68,14 +75,14 @@ class Neo4jAl(metaclass=SingletonMeta):
                 ret_val.append(row[val])
             return ret_val
 
-    def execute(self, query: CypherQuery, params: dict = {}) -> list:
+    def execute(self, query: CypherQuery, params: dict = {}) -> list or None:
         """
         Run a query on the Neo4j database
         :param query: Query to run
         :param params: Parameters of the query as a map
         :return:
         """
-        # Test query
+        # Verify the query
         query.verify_params(params)
 
         # Run query
@@ -83,7 +90,11 @@ class Neo4jAl(metaclass=SingletonMeta):
         with self.__graph_database.session() as session:
             results = list(session.run(query.get_query(), params))
 
-            # Get records
+            # If there is no return query, return None
+            if not query.get_return_value():
+                return None
+
+            # Get records list
             for rec in results:
                 ret_val = self.__get_result(rec, query.get_return_value())
                 records.append(ret_val)

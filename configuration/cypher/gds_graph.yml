@@ -1,0 +1,29 @@
+gds_graph:
+  drop_graph:
+    query: >
+      CALL gds.graph.drop($graphName, $failIfMissing )
+    params:
+      - graphName
+      - failIfMissing
+
+  create_graph_by_property:
+    query: >
+      CALL gds.graph.project.cypher(
+        $graphName,
+        "MATCH (n:`$$APPLICATION$$`) WHERE n.`$$PROPERTY_NAME$$`= " + $propValue + " RETURN id(n) AS id",
+        "MATCH (n:`$$APPLICATION$$`)-[r]->(m:`$$APPLICATION$$`) WHERE n.`$$PROPERTY_NAME$$`= " + $propValue + " AND m.`$$PROPERTY_NAME$$`= " + $propValue + "
+         RETURN id(n) AS source, id(m) AS target")
+    params:
+      - propValue
+      - graphName
+    anchors:
+      - APPLICATION
+      - PROPERTY_NAME
+
+  execute_label_propagation:
+    query: >
+      CALL gds.labelPropagation.write($graphName, { writeProperty: $toWrite, maxIterations: $iterations })
+    params:
+      - graphName
+      - toWrite
+      - iterations

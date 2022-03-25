@@ -1,7 +1,7 @@
 from abc import ABC
 
 from db.neo4j.neo4j_al import Neo4jAl
-from utils.query_loader import QueryLoader
+from utils.query.query_loader import QueryLoader
 
 
 class AbstractImagingService(ABC):
@@ -10,5 +10,5 @@ class AbstractImagingService(ABC):
         """
         Declare common variables for all services
         """
-        self._neo4j_al = Neo4jAl()
-        self._query_service = QueryLoader()
+        self.neo4j_al = Neo4jAl()
+        self.query_service = QueryLoader()

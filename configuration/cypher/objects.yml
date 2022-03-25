@@ -47,7 +47,7 @@ objects:
 
   get_objects_by_type:
     query: >
-      MATCH (o:`$$APPLICATION$$`)
+      MATCH (o:`$$APPLICATION$$`:Object)
       WHERE o.Type=$type
       RETURN o as object
     params:
@@ -56,3 +56,41 @@ objects:
       - APPLICATION
     return:
       - object
+
+  get_unused_objects_by_type:
+    query: >
+      MATCH (o:`$$APPLICATION$$`:Object)
+      WHERE o.Type=$type AND NOT (o)-[]-(:Object)
+      RETURN o as object
+    params:
+      - type
+    anchors:
+      - APPLICATION
+    return:
+      - object
+
+  get_object_number:
+    query: >
+      MATCH (o:`$$APPLICATION$$`:Object)
+      WHERE o.Type=$type
+      RETURN COUNT(DISTINCT o) as object_number
+    params:
+      - type
+    anchors:
+      - APPLICATION
+    return:
+      - object_number
+
+  get_unused_object_number:
+    query: >
+      MATCH (o:`$$APPLICATION$$`:Object)
+      WHERE o.Type=$type AND NOT (o)-[]-(:Object)
+      RETURN COUNT(DISTINCT o) as object_number
+    params:
+      - type
+    anchors:
+      - APPLICATION
+    return:
+      - object_number
+
+

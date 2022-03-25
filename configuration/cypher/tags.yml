@@ -15,15 +15,13 @@ tags:
 
   create_by_id:
     query: >
-      MATCH (o:`$$APPLICATION$$`)
+      MATCH (o)
       WHERE ID(o)=$id
       SET o.Tags = CASE WHEN o.Tags IS NULL THEN [$tag] ELSE [ x in o.Tags WHERE NOT x=$tag ] + $tag END
       RETURN o as object
     params:
       - tag
       - id
-    anchors:
-      - APPLICATION
     return:
       - object
 

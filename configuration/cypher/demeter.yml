@@ -1,0 +1,10 @@
+demeter:
+  health_check:
+    query: >
+      CALL demeter.version()
+
+  group_architecture:
+    query: >
+      CALL demeter.group.architectures($application)
+    params:
+      - application
