@@ -31,6 +31,33 @@ class DemeterArchitectureService(AbstractDemeterService):
         # Execute
         self.neo4j_al.execute(query, {"application": application})
 
+    def delete_architecture(self, application: str, architecture_node: Node):
+        """
+        Group all architecture in the application
+        :param application: Name of the application
+        :param architecture_node: Architecture node
+        :return:
+        """
+        # Get the query
+        query = self.query_service.get_query("demeter", "delete_architecture")
+
+        # Execute
+        self.neo4j_al.execute(query, {"application": application, "architectureId": architecture_node.id})
+
+    def get_architecture_by_name(self, application: str, architecture_name: str) -> Node or List[Node] or None:
+        """
+        Get an architecture node by name
+        :param application:  Name of the application
+        :param architecture_name: Name of the architecture
+        :return:
+        """
+        # Get the query
+        query = self.query_service.get_query("architecture", "get_architecture_by_name")
+        query.replace_anchors({"APPLICATION": application})
+
+        # Execute
+        return self.neo4j_al.execute(query, {"ArchiName": architecture_name})
+
     def flag_object_architecture(self, architecture_name:str, subset_name: str, node: Node) -> None:
         """
         Flag an object with the architecture tag
@@ -64,3 +91,22 @@ class DemeterArchitectureService(AbstractDemeterService):
         """
         for node in nodes:
             self.flag_object_architecture(architecture_name, subset_name, node)
+
+    def delete_architecture_if_exists(self, application: str,  architecture_name: str) -> None:
+        """
+        Delete the architecture view
+        :param application: Name of the application
+        :param architecture_name: Name of the architecture
+        :return: None
+        """
+        # Get the architecture node
+        architecture_node = self.get_architecture_by_name(application, architecture_name)
+
+        # Delete the architecture node by id if found
+        if architecture_node is None:
+            return
+        elif type(architecture_node) is Node:
+            self.delete_architecture(application, architecture_node)
+        elif type(architecture_node) is List:
+            for n in architecture_node:
+                self.delete_architecture(application, n)

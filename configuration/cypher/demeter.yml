@@ -8,3 +8,11 @@ demeter:
       CALL demeter.group.architectures($application)
     params:
       - application
+
+
+  delete_architecture:
+    query: >
+      CALL demeter.delete.architecture.view($application, $architectureId)
+    params:
+      - application
+      - architectureId

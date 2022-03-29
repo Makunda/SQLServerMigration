@@ -8,11 +8,15 @@ gds_graph:
 
   create_graph_by_property:
     query: >
+      WITH "MATCH (n:`$$APPLICATION$$`) WHERE n.`$$PROPERTY_NAME$$`= " + $propValue + " RETURN id(n) AS id" as req1,
+      "MATCH (n:`$$APPLICATION$$`)-[r]-(m:`$$APPLICATION$$`) WHERE n.`$$PROPERTY_NAME$$`= " + $propValue + " AND m.`$$PROPERTY_NAME$$`= " + $propValue + "
+               RETURN id(n) AS source, id(m) AS target" as req2
       CALL gds.graph.project.cypher(
         $graphName,
-        "MATCH (n:`$$APPLICATION$$`) WHERE n.`$$PROPERTY_NAME$$`= " + $propValue + " RETURN id(n) AS id",
-        "MATCH (n:`$$APPLICATION$$`)-[r]->(m:`$$APPLICATION$$`) WHERE n.`$$PROPERTY_NAME$$`= " + $propValue + " AND m.`$$PROPERTY_NAME$$`= " + $propValue + "
-         RETURN id(n) AS source, id(m) AS target")
+        req1,
+        req2
+        ) YIELD graphName
+      RETURN null
     params:
       - propValue
       - graphName

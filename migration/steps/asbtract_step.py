@@ -1,5 +1,9 @@
 from abc import ABC, abstractmethod
+from typing import List
 
+from neo4j.graph import Node
+
+from services.demeter.architecture_service import DemeterArchitectureService
 from utils.configuration.default_configuration import DefaultConfiguration
 
 
@@ -11,6 +15,9 @@ class AbstractStep(ABC):
         """
         self.__configuration = DefaultConfiguration()
         self.__application = self.__configuration.get_value("general", "application")
+
+        self.__architecture_service = DemeterArchitectureService()
+
 
     def get_application(self):
         """

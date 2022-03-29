@@ -43,7 +43,7 @@ class GraphService:
         query.replace_anchors({"APPLICATION": application, "PROPERTY_NAME": object_property})
 
         parameters = {
-            "propValue": value,
+            "propValue": '"' + value + '"',
             "graphName": graph_name
         }
 

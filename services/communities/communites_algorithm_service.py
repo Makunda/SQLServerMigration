@@ -12,7 +12,7 @@ class CommunitiesAlgorithmService:
         self.__neo4j_al = Neo4jAl()
         self.__query_service = QueryLoader()
 
-    def launch_label_propagation(self, graph_name: str, to_write_property: str, iterations: int = 100):
+    def launch_label_propagation(self, graph_name: str, to_write_property: str, iterations: int = 400):
         """
         Launch the label propagation on a graph and write results on property
         :param graph_name: Name of the graph

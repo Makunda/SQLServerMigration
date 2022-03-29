@@ -1,0 +1,12 @@
+architecture:
+
+  get_architecture_by_name:
+    query: >
+      MATCH (a:ArchiModel:`$$APPLICATION$$`) WHERE a.Name = $ArchiName
+      RETURN a as archiView
+    params:
+      - ArchiName
+    anchors:
+      - APPLICATION
+    return:
+      - archiView

@@ -81,6 +81,19 @@ objects:
     return:
       - object_number
 
+  get_object_number_by_levels:
+    query: >
+      MATCH (o:`$$APPLICATION$$`:Object)
+      WHERE o.Type IN $Levels
+      RETURN DISTINCT o as object
+    params:
+      - Levels
+    anchors:
+      - APPLICATION
+    return:
+      - object
+
+
   get_unused_object_number:
     query: >
       MATCH (o:`$$APPLICATION$$`:Object)

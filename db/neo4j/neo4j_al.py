@@ -1,5 +1,5 @@
 import logging
-from typing import Any
+from typing import Any, List
 
 from interfaces.query.cypher_query import CypherQuery
 from logger import Logger
@@ -75,6 +75,24 @@ class Neo4jAl(metaclass=SingletonMeta):
                 ret_val.append(row[val])
             return ret_val
 
+    def get_debug_query(self, query: CypherQuery, params: dict = {}) -> str:
+        """
+        Return the query formatted with parameters for debug purposes
+        :param query: Query to format
+        :param params: Parameters of the query
+        :return: The formatted query as a string
+        """
+        s_query = query.get_query()
+        for key in params.keys():
+            to_replace = params[key]
+
+            if isinstance(to_replace, list):
+                to_replace = "['{}']".format("', '".join(to_replace))
+
+            s_query = s_query.replace("${}".format(key), to_replace)
+
+        return s_query
+
     def execute(self, query: CypherQuery, params: dict = {}) -> list or None:
         """
         Run a query on the Neo4j database
@@ -85,18 +103,22 @@ class Neo4jAl(metaclass=SingletonMeta):
         # Verify the query
         query.verify_params(params)
 
-        # Run query
-        records = []
-        with self.__graph_database.session() as session:
-            results = list(session.run(query.get_query(), params))
+        try:
+            # Run query
+            records = []
+            with self.__graph_database.session() as session:
+                results = list(session.run(query.get_query(), params))
 
-            # If there is no return query, return None
-            if not query.get_return_value():
-                return None
+                # If there is no return query, return None
+                if not query.get_return_value():
+                    return None
 
-            # Get records list
-            for rec in results:
-                ret_val = self.__get_result(rec, query.get_return_value())
-                records.append(ret_val)
+                # Get records list
+                for rec in results:
+                    ret_val = self.__get_result(rec, query.get_return_value())
+                    records.append(ret_val)
 
-        return records
+            return records
+        except Exception as e:
+            self.__logger.error("Failed to run query: {}".format(self.get_debug_query(query, params)))
+            raise e

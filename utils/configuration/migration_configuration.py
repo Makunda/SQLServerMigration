@@ -13,5 +13,4 @@ class MigrationConfiguration(metaclass=SingletonMeta):
         Get the migration level
         :return:
         """
-        print("self.__yml_configuration", self.__yml_configuration)
         return self.__yml_configuration["slq_migration"]["sql_level"]

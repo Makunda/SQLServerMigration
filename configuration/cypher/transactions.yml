@@ -1,0 +1,24 @@
+transactions:
+  get_objects_not_in_transaction_by_level:
+    query: >
+      MATCH (o:Object:`$$APPLICATION$$`)
+      WHERE o.Level in $TypesToInclude AND isEmpty( (o)-[]-(:Transaction) )
+      RETURN DISTINCT o as object
+    params:
+      - TypesToInclude
+    anchors:
+      - APPLICATION
+    return:
+      - object
+
+  get_objects_in_transaction_by_level:
+    query: >
+      MATCH (o:Object:`$$APPLICATION$$`)-[]-(:Transaction)
+      WHERE o.Level in $TypesToInclude
+      RETURN DISTINCT o as object
+    params:
+      - TypesToInclude
+    anchors:
+      - APPLICATION
+    return:
+      - object

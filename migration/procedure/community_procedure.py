@@ -1,3 +1,8 @@
+import random
+from typing import List
+
+from neo4j.graph import Node
+
 from logger import Logger
 from services.communities.communites_algorithm_service import CommunitiesAlgorithmService
 from services.demeter.architecture_service import DemeterArchitectureService
@@ -20,9 +25,9 @@ class CommunityProcedure:
         self.__logger = Logger.get_logger("Community Procedure")
         self.__tag_service = ImagingTagService()
         self.__property_service = ImagingPropertyService()
+        self.__architecture_service = DemeterArchitectureService()
         self.__communities_algorithm = CommunitiesAlgorithmService()
         self.__graph_service = GraphService()
-        self.__architecture_service = DemeterArchitectureService()
 
         self.__configuration = DefaultConfiguration()
         self.__migration_configuration = MigrationConfiguration()
@@ -32,7 +37,6 @@ class CommunityProcedure:
         self.__community_object_property = self.__configuration.get_value("community", "community_object_property")
 
         self.__community_name = "sql_community"
-        self.__architecture_name = "Step3_Communities"
 
     def flag_objects(self) -> None:
         # Clean old links
@@ -44,16 +48,66 @@ class CommunityProcedure:
         self.__property_service.add_property_by_types(self.__application, object_type, self.__community_property,
                                                       self.__community_name)
 
+    def colorize_node(self):
+        """
+        Colorize the nodes based on their communities
+        :param nodes: Node to colorize
+        :return:
+        """
+        # Get node list
+        nodes = self.get_all_nodes()
+
+        # Random colors
+        r = lambda: random.randint(0, 255)
+
+        # Build map name
+        map_name = {}
+        for n in nodes:
+            community = n.get(self.__community_object_property, None)
+            if community not in map_name.keys():
+                map_name[community] = '#%02X%02X%02X' % (r(), r(), r())
+
+        for n in nodes:
+            # Parse the node, get the community property or skip
+            community = n.get(self.__community_object_property, None)
+            self.__property_service.add_property(n, "Color", map_name[community])
+
+
+    def delete_architecture_if_exists(self, architecture_name: str) -> None:
+        """
+        Delete the architecture view
+        :param architecture_name: Name of the architecture
+        :return: None
+        """
+        # Get the architecture node
+        architecture_node = self.__architecture_service.get_architecture_by_name(self.__application, architecture_name)
+
+        # Delete the architecture node by id if found
+        if architecture_node is None:
+            return
+        elif type(architecture_node) is Node:
+            self.__architecture_service.delete_architecture(self.__application, architecture_node)
+        elif type(architecture_node) is List:
+            for n in architecture_node:
+                self.__architecture_service.delete_architecture(self.__application, n)
+
     def group_architecture(self):
+        """
+        Group the architecture in the application
+        :return: The group of application
+        """
         self.__architecture_service.group_architecture(self.__application)
 
-    def delete_graph(self, graph_name: str):
+    def delete_graph(self, graph_name: str) -> None:
         """
         Delete a graph with a specific name
         :param graph_name: Name of the graph
-        :return:
+        :return: None
         """
-        self.__graph_service.delete_graph(graph_name)
+        try:
+            self.__graph_service.delete_graph(graph_name)
+        except Exception as e:
+            self.__logger.warn("Failed to delete the graph")
 
     def create_graph(self, graph_name: str):
         """
@@ -77,13 +131,26 @@ class CommunityProcedure:
         Get Statistics
         :return:
         """
-        nodes = self.__communities_algorithm.get_communities_above(self.__application, self.__community_object_property,
+        nodes = self.__communities_algorithm.get_communities_below(self.__application, self.__community_object_property,
                                                                    50)
+        # Build map name
+        map_name = {}
+        for n in nodes:
+            community = n.get(self.__community_object_property, None)
+            if community not in map_name.keys():
+                map_name[community] = 1
+            else:
+                map_name[community] = map_name[community] + 1
+
+        map_name = {k: v for k, v in sorted(map_name.items(), key=lambda item: item[1])}
+
         for n in nodes:
             # Parse the node, get the community property or skip
             community = n.get(self.__community_object_property, None)
+            community_name = "Fragment {}".format(list(map_name.keys()).index(community))
+
             if community and not subset:
-                self.__architecture_service.flag_object_architecture(architecture_name, community, n)
+                self.__architecture_service.flag_object_architecture(architecture_name, community_name, n)
             else:
                 self.__architecture_service.flag_object_architecture(architecture_name, subset, n)
 
@@ -93,13 +160,38 @@ class CommunityProcedure:
         :return:
         """
         nodes = self.__communities_algorithm.get_communities_above(self.__application, self.__community_property, 50)
+
+        # Build map name
+        map_name = {}
+
+        for n in nodes:
+            community = n.get(self.__community_object_property, None)
+            if community not in map_name.keys():
+                map_name[community] = 1
+            else:
+                map_name[community] = map_name[community] + 1
+
+        map_name = {k: v for k, v in sorted(map_name.items(), key=lambda item: item[1])}
+
         for n in nodes:
             # Parse the node, get the community property or skip
             community = n.get(self.__community_object_property, None)
+            community_name = "Monolith {}".format(list(map_name.keys()).index(community))
+
             if community and not subset:
-                self.__architecture_service.flag_object_architecture(architecture_name, community, n)
+                self.__architecture_service.flag_object_architecture(architecture_name, community_name, n)
             else:
                 self.__architecture_service.flag_object_architecture(architecture_name, subset, n)
+
+    def get_all_nodes(self) -> List[Node]:
+        """
+        Return all the nodes flagged with the community attribute
+        :return: The list of node containing the community attribute
+        """
+        nodes = []
+        nodes.extend(self.__communities_algorithm.get_communities_above(self.__application, self.__community_property, 50))
+        nodes.extend(self.__communities_algorithm.get_communities_below(self.__application, self.__community_property, 50))
+        return nodes
 
     def detect(self):
         """
@@ -110,6 +202,7 @@ class CommunityProcedure:
 
         # Delete previous groups
         self.__logger.info("Deleting old graph...")
+        self.delete_graph(graph_name)
 
         # Flagging the community to investigate
         self.__logger.info("Identification of the graph population...")
@@ -125,11 +218,18 @@ class CommunityProcedure:
 
         # Flag communities
         self.__logger.info("Flagging big communities...")
-        self.flag_architectures_below_50("Step3_FirstSegmentation", "Garbage")
-        self.flag_architectures_above_50("Step3_FirstSegmentation")
+        step_name = "Step4_Database Monoliths"
+        self.delete_architecture_if_exists(step_name)  # Delete the architecture
+        self.flag_architectures_below_50(step_name, "Others")
+        self.flag_architectures_above_50(step_name)
         self.group_architecture()
 
         self.__logger.info("Flagging all communities...")
-        self.flag_architectures_below_50("Step4_FistSegmentation")
-        self.flag_architectures_above_50("Step4_FistSegmentation")
+        step_name = "Step5_Database Communities"
+        self.delete_architecture_if_exists(step_name)  # Delete the architecture
+        self.flag_architectures_below_50(step_name)
+        self.flag_architectures_above_50(step_name)
         self.group_architecture()
+
+        self.__logger.info("Changing node color by communities.")
+        self.colorize_node()

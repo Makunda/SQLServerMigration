@@ -104,6 +104,19 @@ class ObjectService(AbstractImagingService):
         # Execute
         return self.neo4j_al.execute(query, { "type": object_type })
 
+    def get_object_by_levels(self, application: str, levels: List[str]) -> List[Node]:
+        """
+        Get the list of Object in specific levels
+        :param application: Name of the application
+        :param levels: Levels to include in the context
+        :return: The list of Object matching these requirements
+        """
+        query = self.query_service.get_query("objects", "get_object_number_by_levels")
+        query.replace_anchors({"APPLICATION": application})
+
+        # Execute
+        return self.neo4j_al.execute(query, {"Levels": levels})
+
     def object_to_imaging_object(self, node: Node) -> ImagingObject:
         """
         Convert the object to the JSON
@@ -113,7 +126,11 @@ class ObjectService(AbstractImagingService):
         cyclomatic_complexity = self.get_object_complexity(node, "Cyclomatic Complexity")
         essential_complexity = self.get_object_complexity(node, "Essential Complexity")
         file_path = self.get_object_property(node, "File")
-        line_of_code = int(self.get_object_property(node, "Number of code lines", 0))
+
+        try:
+            line_of_code = int(self.get_object_property(node, "Number of code lines", 0))
+        except:
+            line_of_code = 0
 
         val_cyclo = cyclomatic_complexity[0] if len(cyclomatic_complexity) >= 1 else 0
         val_essential = essential_complexity[0] if len(essential_complexity) >= 1 else 0
