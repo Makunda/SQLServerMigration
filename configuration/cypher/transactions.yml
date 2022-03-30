@@ -13,7 +13,7 @@ transactions:
 
   get_objects_in_transaction_by_level:
     query: >
-      MATCH (o:Object:`$$APPLICATION$$`)-[]-(:Transaction)
+      MATCH (o:Object:`$$APPLICATION$$`)<-[]-(:Transaction)
       WHERE o.Level in $TypesToInclude
       RETURN DISTINCT o as object
     params:
@@ -22,3 +22,84 @@ transactions:
       - APPLICATION
     return:
       - object
+
+  get_object_count:
+    query: >
+      MATCH (t:Transaction)-[]->(o)
+      WHERE ID(t) = $IdTransaction AND ( o:Object OR o:SubObject )
+      RETURN COUNT(DISTINCT o) as object_count LIMIT 1
+    params:
+      - IdTransaction
+    return:
+      - object_count
+
+  get_transaction_including_objects_with_property:
+    query: >
+      MATCH (t:Transaction:`$$APPLICATION$$`)-[]->(o:Object)
+      WHERE o.`$$PROPERTY_NAME$$` = $property_value
+      RETURN t as transaction
+    params:
+      - property_value
+    anchors:
+      - APPLICATION
+      - PROPERTY_NAME
+    return:
+      - transaction
+
+  get_prop_value_list_in_transaction:
+    query: >
+      MATCH (t:Transaction)-[]->(o:Object)
+      WHERE ID(t) = $TransactionId AND o.`$$PROPERTY_NAME$$` IS NOT NULL
+      RETURN DISTINCT o.`$$PROPERTY_NAME$$` as property_name
+    params:
+      - TransactionId
+    anchors:
+      - PROPERTY_NAME
+    return:
+      - property_name
+
+  get_transaction_complexity:
+    query: >
+      MATCH (t:Transaction)
+      OPTIONAL MATCH (t)-[]->(s)
+      WHERE ID(t)=$TransactionId AND ( s:Object OR s:SubObject )
+      WITH DISTINCT t, COLLECT(DISTINCT s) as o_investigation
+      UNWIND o_investigation as o
+      OPTIONAL MATCH (o)-[r]->(p:ObjectProperty)
+      WHERE p.Description = $ToGrabComplexity
+      WITH DISTINCT t, SUM(toInteger(r.value)) as complexity_total
+      RETURN  complexity_total as complexity_total LIMIT 1
+    params:
+      - TransactionId
+      - ToGrabComplexity
+    return:
+      - complexity_total
+
+  get_transaction_starting_point:
+    query: >
+      MATCH (t:Transaction)-[:StartsWith]->(tn:TransactionNode)-[:IN]->(o)
+      WHERE ID(t) = $TransactionId
+      RETURN DISTINCT o.Type as starting_point LIMIT 1
+    params:
+      - TransactionId
+    return:
+      - starting_point
+
+  get_transaction_end_points:
+    query: >
+      MATCH (t:Transaction)-[:EndsWith]->(tn:TransactionNode)<-[:OUT]-(o)
+      WHERE ID(t) = $TransactionId
+      RETURN DISTINCT o.Type as end_point
+    params:
+      - TransactionId
+    return:
+      - end_point
+
+  get_all_transaction:
+    query: >
+      MATCH (t:Transaction:`$$APPLICATION$$`)
+      RETURN DISTINCT t as transaction
+    anchors:
+      - APPLICATION
+    return:
+      - transaction

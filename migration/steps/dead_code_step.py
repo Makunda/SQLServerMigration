@@ -33,41 +33,11 @@ class DeadCodeStep(AbstractStep):
         # Services
         self.__dead_code = DeadCodeService()
         self.__tag_service = ImagingTagService()
-        self.__report_generator = ReportGenerator()
-        self.__workspace_util = WorkspaceUtils()
 
         self.__migration_configuration = MigrationConfiguration()
         self.__object_type = self.__migration_configuration.get_migration_levels()
 
-        self.__file_dir = self.__workspace_util.merge_file("Step_0_dead_code/")
-
-    def generate_excel(self, title: str, folder_path: str, headers: List[str], rows: List[List]):
-        """
-        Generate the excel report base on the passed rows
-        :param title: Title of the report
-        :param folder_path: Folder of the report
-        :param headers: Headers of the records
-        :param rows: Rows to insert
-        :return:
-        """
-        # Append the CSV extension and create the extension
-        FolderUtils.merge_file(folder_path)
-
-        report = None
-        try:
-            report = ReportGenerator().set_path(folder_path) \
-                .set_file_name(title).set_headers(headers).build()
-
-            for i, rec in enumerate(rows):
-                if i % 100 == 0:
-                    self.__logger.info("Wrote {} of {} to '{}'.".format(i, len(rows), report.get_file_name()))
-                report.write(rec)  # Write row
-        except Exception as e:
-            self.__logger.error("Failed to generate the report.", e)
-        finally:
-            # Report close
-            if report is not None:
-                report.close()
+        self.__file_dir = self.workspace_util.merge_file("Dead Code/")
 
     def generate_global_report(self):
         """

@@ -1,14 +1,17 @@
 import random
-from typing import List
+from typing import List, Dict
 
 from neo4j.graph import Node
 
+from interfaces.imaging.imaging_object import ImagingObject
 from logger import Logger
 from services.communities.communites_algorithm_service import CommunitiesAlgorithmService
 from services.demeter.architecture_service import DemeterArchitectureService
 from services.graph.graph_service import GraphService
+from services.imaging.object_service import ObjectService
 from services.imaging.property_service import ImagingPropertyService
 from services.imaging.tag_service import ImagingTagService
+from services.imaging.transaction_service import TransactionService
 from utils.configuration.default_configuration import DefaultConfiguration
 from utils.configuration.migration_configuration import MigrationConfiguration
 
@@ -27,6 +30,8 @@ class CommunityProcedure:
         self.__property_service = ImagingPropertyService()
         self.__architecture_service = DemeterArchitectureService()
         self.__communities_algorithm = CommunitiesAlgorithmService()
+        self.__object_service = ObjectService()
+        self.__transaction_service = TransactionService()
         self.__graph_service = GraphService()
 
         self.__configuration = DefaultConfiguration()
@@ -47,6 +52,13 @@ class CommunityProcedure:
         object_type = self.__migration_configuration.get_migration_levels()
         self.__property_service.add_property_by_types(self.__application, object_type, self.__community_property,
                                                       self.__community_name)
+
+    def get_object_community(self, node: Node) -> None or str:
+        """
+        Get the community of the object or None if the property does not exist
+        :return: The community property
+        """
+        return node.get(self.__community_property, None)
 
     def colorize_node(self):
         """
@@ -72,7 +84,6 @@ class CommunityProcedure:
             community = n.get(self.__community_object_property, None)
             self.__property_service.add_property(n, "Color", map_name[community])
 
-
     def delete_architecture_if_exists(self, architecture_name: str) -> None:
         """
         Delete the architecture view
@@ -90,6 +101,51 @@ class CommunityProcedure:
         elif type(architecture_node) is List:
             for n in architecture_node:
                 self.__architecture_service.delete_architecture(self.__application, n)
+
+    def get_transactions_by_single_community(self, community_id: any) -> List[Node]:
+        """
+        Get the list of transaction accessing a particular community
+        :param community_id: Id of the community
+        :return: The list of associated transactions
+        """
+        return self.__transaction_service.get_transaction_including_objects_with_property(
+                                                                                        self.__application,
+                                                                                        self.__community_property,
+                                                                                        community_id)
+
+    def get_transactions_by_communities(self) -> Dict[int, List[Node]]:
+        """
+        Get the list of transaction in the application grouped by the value of the communities inside
+        :return: Dictionary of transactions grouped by silo
+        """
+        # Map declaration
+        transaction_nodes = self.__transaction_service.get_all_transactions(self.__application)
+
+        # For each group in the list of communities
+        for tn in transaction_nodes:
+            community_map[group] = self.get_transactions_by_single_community(group)
+
+        return community_map
+
+    def get_incoming_communities(self, community_id: any) -> List:
+        """
+        Get the Id of incoming communities
+        :param community_id: Id of the communities
+        :return:
+        """
+        return self.__communities_algorithm.get_incoming_communities(self.__application,
+                                                                     self.__community_object_property,
+                                                                     community_id)
+
+    def get_outgoing_communities(self, community_id: any) -> List:
+        """
+        Get the Id of outgoing communities
+        :param community_id: Id of the communities
+        :return:
+        """
+        return self.__communities_algorithm.get_outgoing_communities(self.__application,
+                                                                     self.__community_object_property,
+                                                                     community_id)
 
     def group_architecture(self):
         """
@@ -132,7 +188,7 @@ class CommunityProcedure:
         :return:
         """
         nodes = self.__communities_algorithm.get_communities_below(self.__application, self.__community_object_property,
-                                                                   50)
+                                                                   150)
         # Build map name
         map_name = {}
         for n in nodes:
@@ -159,7 +215,7 @@ class CommunityProcedure:
         Get Statistics
         :return:
         """
-        nodes = self.__communities_algorithm.get_communities_above(self.__application, self.__community_property, 50)
+        nodes = self.__communities_algorithm.get_communities_above(self.__application, self.__community_property, 150)
 
         # Build map name
         map_name = {}
@@ -189,9 +245,22 @@ class CommunityProcedure:
         :return: The list of node containing the community attribute
         """
         nodes = []
-        nodes.extend(self.__communities_algorithm.get_communities_above(self.__application, self.__community_property, 50))
-        nodes.extend(self.__communities_algorithm.get_communities_below(self.__application, self.__community_property, 50))
+        nodes.extend(
+            self.__communities_algorithm.get_communities_above(self.__application, self.__community_property, 50))
+        nodes.extend(
+            self.__communities_algorithm.get_communities_below(self.__application, self.__community_property, 50))
         return nodes
+
+    def get_all_nodes_as_imaging_object(self) -> List[ImagingObject]:
+        """
+        Return all the nodes flagged with the community attribute
+        :return: The list of node containing the community attribute
+        """
+
+        ret_list = []
+        for n in self.get_all_nodes():
+            ret_list.append(self.__object_service.object_to_imaging_object(n))
+        return ret_list
 
     def detect(self):
         """

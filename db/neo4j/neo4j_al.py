@@ -89,7 +89,7 @@ class Neo4jAl(metaclass=SingletonMeta):
             if isinstance(to_replace, list):
                 to_replace = "['{}']".format("', '".join(to_replace))
 
-            s_query = s_query.replace("${}".format(key), to_replace)
+            s_query = s_query.replace("${}".format(key), str(to_replace))
 
         return s_query
 

@@ -18,7 +18,7 @@ class Orchestrator:
         Orchestrator
         """
         self.__logger = Logger.get_logger("Orchestrator")
-        self.__steps: List[AbstractStep] = [DeadCodeStep(),  TransactionalStep(), DatabaseFlatteningStep(), CommunityCreationStep()]
+        self.__steps: List[AbstractStep] = [DeadCodeStep(),   DatabaseFlatteningStep(), CommunityCreationStep()]
 
     def launch(self):
         """

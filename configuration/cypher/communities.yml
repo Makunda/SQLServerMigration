@@ -30,3 +30,31 @@ communities:
       - PROPERTY
     return:
       - object
+
+  get_incoming_communities:
+    query: >
+      MATCH (o:Object:`$$APPLICATION$$`)<-[]-(oth:Object)
+      WHERE o.`$$PROPERTY$$` = $prop_value
+      AND o.`$$PROPERTY$$` <> oth.`$$PROPERTY$$`
+      RETURN DISTINCT oth.`$$PROPERTY$$` as community
+    params:
+      - prop_value
+    anchors:
+      - APPLICATION
+      - PROPERTY
+    return:
+      - community
+      -
+  get_outgoing_communities:
+    query: >
+      MATCH (o:Object:`$$APPLICATION$$`)-[]->(oth:Object)
+      WHERE o.`$$PROPERTY$$` = $prop_value
+      AND o.`$$PROPERTY$$` <> oth.`$$PROPERTY$$`
+      RETURN DISTINCT oth.`$$PROPERTY$$` as community
+    params:
+      - prop_value
+    anchors:
+      - APPLICATION
+      - PROPERTY
+    return:
+      - community

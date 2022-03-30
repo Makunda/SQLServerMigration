@@ -1,4 +1,4 @@
-from typing import List, Any
+from typing import List
 
 from neo4j.graph import Node
 
@@ -18,7 +18,7 @@ class ImagingPropertyService(AbstractImagingService):
         self.neo4j_al = Neo4jAl()
         self.query_service = QueryLoader()
 
-    def add_property(self,  node: Node, object_property: str, value: str) -> None:
+    def add_property(self, node: Node, object_property: str, value: str) -> None:
         """
         Add a property on a set of node
         :param node: Node to process
@@ -38,6 +38,23 @@ class ImagingPropertyService(AbstractImagingService):
         # Execute
         self.neo4j_al.execute(query, params)
 
+    def get_value_list(self, application: str, object_property: str) -> List[any]:
+        """
+        Get the list of possible values for a given property in the application
+        :param application: Name of the application
+        :param object_property: Name of the property to get
+        :return: Distinct list of possible value
+        """
+        # Get the query to link an aip object
+        query = self.query_service.get_query("properties", "get_value_list")
+        query.replace_anchors({
+            "APPLICATION": application,
+            "PROPERTY_NAME": object_property,
+        })
+
+        # Execute
+        return self.neo4j_al.execute(query)
+
     def add_property_by_types(self, application: str, type_list: List[str], object_property: str, value: str) -> None:
         """
         Add a property based on the Type of object
@@ -56,10 +73,13 @@ class ImagingPropertyService(AbstractImagingService):
             "propertyValue": value
         }
 
+        # Debug
+        self.neo4j_al.get_debug_query(query, params)
+
         # Execute
         self.neo4j_al.execute(query, params)
 
-    def remove_property_with_value(self,  application: str, object_property: str, value: str) -> None:
+    def remove_property_with_value(self, application: str, object_property: str, value: str) -> None:
         """
         Add a property on a set of node
         :param application: Name of the application

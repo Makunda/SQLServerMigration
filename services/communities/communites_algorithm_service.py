@@ -69,3 +69,41 @@ class CommunitiesAlgorithmService:
 
         # Execute
         return self.__neo4j_al.execute(query, parameters)
+
+    def get_incoming_communities(self, application: str, object_property: str, community_value: int) -> List[Node] or None:
+        """
+        Get the list of incoming communities
+        :param application: Name of the application
+        :param object_property:  Object property to query
+        :param community_value: Value of the community
+        :return: The list of node from the community
+        """
+        # Get the query to link an aip object
+        query = self.__query_service.get_query("communities", "get_incoming_communities")
+        query.replace_anchors({"APPLICATION": application, "PROPERTY": object_property})
+
+        parameters = {
+            "prop_value": community_value
+        }
+
+        # Execute
+        return self.__neo4j_al.execute(query, parameters)
+
+    def get_outgoing_communities(self, application: str, object_property: str, community_value: int) -> List[Node] or None:
+        """
+        Get the list of incoming communities
+        :param application: Name of the application
+        :param object_property:  Object property to query
+        :param community_value: Value of the community
+        :return: The list of node from the community
+        """
+        # Get the query to link an aip object
+        query = self.__query_service.get_query("communities", "get_incoming_communities")
+        query.replace_anchors({"APPLICATION": application, "PROPERTY": object_property})
+
+        parameters = {
+            "prop_value": community_value
+        }
+
+        # Execute
+        return self.__neo4j_al.execute(query, parameters)

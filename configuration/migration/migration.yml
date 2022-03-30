@@ -6,3 +6,9 @@ slq_migration:
     - SQL Server View
     - SQL Server Trigger
     - SQL Server SQL Script
+    - DB2 Procedure
+    - DB2 Function
+    - DB2 Table
+    - DB2 View
+    - DB2 Trigger
+    - DB2 SQL Script

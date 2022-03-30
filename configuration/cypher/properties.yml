@@ -71,3 +71,14 @@ properties:
     anchors:
       - APPLICATION
       - PROPERTY_NAME
+
+  get_value_list:
+    query: >
+      MATCH (o:`$$APPLICATION$$`)
+      WHERE o.`PROPERTY_NAME` IS NOT NULL
+      RETURN DISTINCT o.`PROPERTY_NAME` as value
+    anchors:
+      - APPLICATION
+      - PROPERTY_NAME
+    return:
+      - value
