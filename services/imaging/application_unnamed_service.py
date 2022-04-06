@@ -10,7 +10,7 @@ class ApplicationUnnamedService(AbstractImagingService):
 
     def __init__(self):
         """
-        Initialize the application service
+        Initialize the application services
         """
         super(ApplicationUnnamedService, self).__init__()
         self.__logger = Logger.get_logger("Application Unnamed Service")

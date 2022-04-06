@@ -9,7 +9,7 @@ from services.imaging.tag_service import ImagingTagService
 
 class DemeterArchitectureService(AbstractDemeterService):
     """
-    Architecture service
+    Architecture services
     """
 
     def __init__(self):

@@ -14,7 +14,7 @@ class ObjectService(AbstractImagingService):
     def __init__(self):
         super(ObjectService, self).__init__()
 
-    def get_object_complexity(self, node: Node, complexity: str):
+    def get_object_complexity(self, node: Node, complexity: str) -> float:
         """
         Get the complexity of an object in the KB
         :param node: Object to get
@@ -31,7 +31,12 @@ class ObjectService(AbstractImagingService):
         }
 
         # Execute
-        return self.neo4j_al.execute(query, parameters)
+        res = self.neo4j_al.execute(query, parameters)
+
+        try:
+            return float(res[0]) if len(res) >= 1 else 0.0
+        except:
+            return 0.0
 
     def get_object_property(self, node: Node, object_property: str, default=None) -> str:
         """
@@ -117,6 +122,17 @@ class ObjectService(AbstractImagingService):
         # Execute
         return self.neo4j_al.execute(query, {"Levels": levels})
 
+    def get_object_transactions(self, node: Node) -> List[Node]:
+        """
+        Return the list of transaction of the specified object
+        :param node: Node to investigation
+        :return: The list of transactions
+        """
+        query = self.query_service.get_query("objects", "get_object_transactions")
+
+        # Execute
+        return self.neo4j_al.execute(query, {"id": node.id})
+
     def object_to_imaging_object(self, node: Node) -> ImagingObject:
         """
         Convert the object to the JSON
@@ -125,15 +141,13 @@ class ObjectService(AbstractImagingService):
         """
         cyclomatic_complexity = self.get_object_complexity(node, "Cyclomatic Complexity")
         essential_complexity = self.get_object_complexity(node, "Essential Complexity")
+        integration_complexity = self.get_object_complexity(node, "Integration Complexity")
         file_path = self.get_object_property(node, "File")
 
         try:
             line_of_code = int(self.get_object_property(node, "Number of code lines", 0))
         except:
             line_of_code = 0
-
-        val_cyclo = cyclomatic_complexity[0] if len(cyclomatic_complexity) >= 1 else 0
-        val_essential = essential_complexity[0] if len(essential_complexity) >= 1 else 0
 
         return ImagingObject(
             str(node.get("Name", "")),
@@ -143,7 +157,8 @@ class ObjectService(AbstractImagingService):
             str(node.get("Level", "")),
             str(file_path),
             line_of_code,
-            val_cyclo,
-            val_essential,
+            cyclomatic_complexity,
+            essential_complexity,
+            integration_complexity,
             node
         )

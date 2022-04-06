@@ -1,0 +1,24 @@
+relationships:
+
+  remove_property_on_all:
+    query: >
+      MATCH (:`$$APPLICATION$$`)-[r]-(:`$$APPLICATION$$`)
+      WHERE r.`$$PROPERTY$$` IS NOT NULL
+      REMOVE r.`$$PROPERTY$$`
+    anchors:
+      - APPLICATION
+      - PROPERTY
+
+  apply_property:
+    query: >
+      MATCH ()-[r]-()
+      WHERE ID(r) = $IdRelationship
+      SET r.`$$PROPERTY$$` = $PropertyValue
+      return r as relationship LIMIT 1
+    params:
+      - IdRelationship
+      - PropertyValue
+    anchors:
+      - PROPERTY
+    return:
+      - relationship

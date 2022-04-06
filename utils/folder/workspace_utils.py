@@ -17,14 +17,18 @@ class WorkspaceUtils(metaclass=SingletonMeta):
         """
         self.__configuration = DefaultConfiguration()
         workspace_path = self.__configuration.get_value("folders", "workspace")
+        application = self.__configuration.get_value("general", "application")
 
         # Check Workspace
         if os.path.isabs(workspace_path):
             self.__workspace_folder = workspace_path
         else:
             relative_path = os.path.join(ROOT_DIR, workspace_path)
-            FolderUtils.merge_folder(relative_path)
             self.__workspace_folder = relative_path
+
+        # Add current application name
+        self.__workspace_folder = os.path.join(self.__workspace_folder, application)
+        FolderUtils.merge_folder(self.__workspace_folder)
 
     def get_workspace(self) -> str:
         """

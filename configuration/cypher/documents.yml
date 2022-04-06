@@ -11,7 +11,7 @@ documents:
         Theme: 12
       })
       SET o.Id = CASE WHEN o.Id IS NULL THEN $id ELSE o.Id END
-      SET o.Tags = CASE WHEN o.Tags IS NULL THEN [] ELSE o.Id END
+      SET o.Tags = CASE WHEN o.Tags IS NULL THEN [] ELSE o.Tags END
       SET o.ViewName = CASE WHEN o.ViewName IS NULL THEN "" ELSE o.ViewName END
       SET o.Nodes = CASE WHEN o.Nodes IS NULL THEN [] ELSE o.Nodes END
       RETURN o as document

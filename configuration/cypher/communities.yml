@@ -1,4 +1,16 @@
 communities:
+  get_communities_node:
+    query: >
+      MATCH (o:Object:`$$APPLICATION$$`)
+      WHERE o.`$$PROPERTY$$` IS NOT NULL
+      return DISTINCT o.`$$PROPERTY$$` as community, COLLECT(DISTINCT o) as objects
+    anchors:
+      - APPLICATION
+      - PROPERTY
+    return:
+      - community
+      - objects
+
   get_communities_above:
     query: >
       MATCH (o:Object:`$$APPLICATION$$`)
@@ -44,7 +56,7 @@ communities:
       - PROPERTY
     return:
       - community
-      -
+
   get_outgoing_communities:
     query: >
       MATCH (o:Object:`$$APPLICATION$$`)-[]->(oth:Object)

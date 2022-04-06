@@ -49,3 +49,10 @@ class DefaultConfiguration(metaclass=SingletonMeta):
             return default
 
         return str(section[key])
+
+    def get_application(self):
+        """
+        Get the name of the current application
+        :return:
+        """
+        return self.get_value("general", "application")

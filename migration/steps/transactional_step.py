@@ -2,6 +2,7 @@ from typing import List
 
 from neo4j.graph import Node
 
+from interfaces.imaging.imaging_object import ImagingObject
 from logger import Logger
 from migration.steps.asbtract_step import AbstractStep
 from services.communities.communites_algorithm_service import CommunitiesAlgorithmService
@@ -31,6 +32,8 @@ class TransactionalStep(AbstractStep):
 
         self.__application = self.__configuration.get_value("general", "application")
 
+        self.__file_dir = self.workspace_util.merge_file("Transaction Analysis/")
+
     def get_name(self) -> str:
         return "Transactional Step"
 
@@ -54,6 +57,40 @@ class TransactionalStep(AbstractStep):
         for obj in objects:
             self.__architecture_service.flag_object_architecture(architecture_name, "In Transaction", obj)
 
+    def generate_report_in_transaction(self, to_include_type: List[str]) -> None:
+        """
+        Generate the report including all the objects in transactions
+        :param to_include_type:
+        :return:
+        """
+        headers = ImagingObject.get_headers()
+        values: List = list()
+
+        objects = self.__transactional_service.get_objects_in_transaction_by_levels(self.__application,
+                                                                                    to_include_type)
+        for obj in objects:
+            imaging_object = self.__object_service.object_to_imaging_object(obj)
+            values.append(imaging_object.get_values())
+
+        self.generate_excel("Objects_in_transaction", self.__file_dir, headers, values)
+
+    def generate_report_not_in_transaction(self, to_include_type: List[str]) -> None:
+        """
+        Generate the report including all the objects not in  transactions
+        :param to_include_type:
+        :return:
+        """
+        headers = ImagingObject.get_headers()
+        values: List = list()
+
+        objects = self.__transactional_service.get_objects_not_in_transaction_by_levels(self.__application,
+                                                                                    to_include_type)
+        for obj in objects:
+            imaging_object = self.__object_service.object_to_imaging_object(obj)
+            values.append(imaging_object.get_values())
+
+        self.generate_excel("Objects_in_not_transaction", self.__file_dir, headers, values)
+
     def launch(self):
         """
         Launch th
@@ -64,8 +101,20 @@ class TransactionalStep(AbstractStep):
         self.__architecture_service.delete_architecture_if_exists(self.__application, step_name)
 
         # Flag object
+        self.__logger.info("Flagging objects not in transaction...")
         self.flag_object_not_in_transaction(step_name, levels)
+
+        self.__logger.info("Flagging objects in transaction...")
         self.flag_object_in_transaction(step_name, levels)
 
-        # Migration
+        # Create Architecture
+        self.__logger.info("Grouping elements into architecture views")
         self.__architecture_service.group_architecture(self.__application)
+
+        # Create Report
+        self.__logger.info("Generating report for objects in transaction")
+        self.generate_report_in_transaction(levels)
+
+        # Create Report
+        self.__logger.info("Generating report for not in transactions")
+        self.generate_report_not_in_transaction(levels)

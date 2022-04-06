@@ -17,7 +17,7 @@ class DeadCodeResult:
         if self.__total_object == 0:
             self.__ratio = 0
         elif self.__total_unused == 0:
-            self.__ratio = 100
+            self.__ratio = 0
         else:
             self.__ratio = 100 * (self.__total_unused / self.__total_object)
 
@@ -41,9 +41,9 @@ class DeadCodeResult:
     def get_headers() -> List[str]:
         return [
             "Object Type",
-            "Total Object",
-            "Total Unused Object",
-            "Ratio"
+            "Total Objects",
+            "Total Unused Objects",
+            "Percentage Unused Objects"
         ]
 
     def get_values(self):
@@ -51,6 +51,5 @@ class DeadCodeResult:
             self.__object_type,
             self.__total_object,
             self.__total_unused,
-            self.__ratio,
-
+            "{} %".format(self.__ratio)
         ]

@@ -18,6 +18,7 @@ class ImagingObject:
     line_of_code: int
     cyclomatic_complexity: float
     essential_complexity: float
+    integration_complexity: float
 
     node: Node = None
 
@@ -36,6 +37,7 @@ class ImagingObject:
             line_of_code=self.line_of_code,
             cyclomatic_complexity=self.cyclomatic_complexity,
             essential_complexity=self.essential_complexity,
+            integration_complexity=self.integration_complexity
         )
 
     def get_node(self) -> Node:
@@ -57,6 +59,7 @@ class ImagingObject:
             "Line of code",
             "Cyclomatic Complexity",
             "Essential Complexity",
+            "Integration Complexity"
         ]
 
     def get_values(self) -> List:

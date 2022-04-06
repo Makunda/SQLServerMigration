@@ -6,10 +6,23 @@ gds_graph:
       - graphName
       - failIfMissing
 
+  get_graph_relationships:
+    query: >
+      MATCH (n:`$$APPLICATION$$`)-[r]-(m:`$$APPLICATION$$`)
+      WHERE n.`$$PROPERTY_NAME$$` = $propValue AND m.`$$PROPERTY_NAME$$` = $propValue
+      RETURN r as relationship
+    params:
+      - propValue
+    anchors:
+      - APPLICATION
+      - PROPERTY_NAME
+    return:
+      - relationship
+
   create_graph_by_property:
     query: >
       WITH "MATCH (n:`$$APPLICATION$$`) WHERE n.`$$PROPERTY_NAME$$`= " + $propValue + " RETURN id(n) AS id" as req1,
-      "MATCH (n:`$$APPLICATION$$`)-[r]-(m:`$$APPLICATION$$`) WHERE n.`$$PROPERTY_NAME$$`= " + $propValue + " AND m.`$$PROPERTY_NAME$$`= " + $propValue + "
+      "MATCH (n:`$$APPLICATION$$`)-[r]->(m:`$$APPLICATION$$`) WHERE n.`$$PROPERTY_NAME$$`= " + $propValue + " AND m.`$$PROPERTY_NAME$$`= " + $propValue + "
                RETURN id(n) AS source, id(m) AS target" as req2
       CALL gds.graph.project.cypher(
         $graphName,

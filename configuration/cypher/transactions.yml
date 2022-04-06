@@ -103,3 +103,16 @@ transactions:
       - APPLICATION
     return:
       - transaction
+
+  get_all_transaction_with_min_objects:
+    query: >
+      MATCH (t:Transaction:`$$APPLICATION$$`)-[:Includes]->(o)
+      WITH t , COLLECT(DISTINCT o) as trans_size
+      WHERE trans_size >= $minSize
+      RETURN DISTINCT t as transaction
+    params:
+      - minSize
+    anchors:
+      - APPLICATION
+    return:
+      - transaction

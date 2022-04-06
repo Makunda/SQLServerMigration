@@ -1,0 +1,19 @@
+link_weight:
+  call:
+    rel_name: name
+    value: 1
+  use:
+    rel_name: use
+    value: 2
+  select:
+    rel_name: use
+    regex: (select)
+    value: 3
+  delete:
+    rel_name: use
+    regex: (delete)
+    value: 3
+  udpdate:
+    rel_name: use
+    regex: (delete)
+    value: 3

@@ -23,6 +23,17 @@ objects:
     return:
       - level
 
+  get_object_transactions:
+    query: >
+      MATCH (o:Object)<-[]-(t:Transaction)
+      WHERE ID(o)=$id
+      RETURN t as transaction
+    params:
+      - id
+    return:
+      - transaction
+
+
   get_object_complexity:
     query: >
       MATCH (o)-[r]->(objp:ObjectProperty)

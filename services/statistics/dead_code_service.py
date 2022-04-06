@@ -7,12 +7,12 @@ from services.imaging.object_service import ObjectService
 
 class DeadCodeService:
     """
-    Dead code service
+    Dead code services
     """
 
     def __init__(self):
         """
-        Initialize the dead code service with an application
+        Initialize the dead code services with an application
         :param application:
         """
         self.__object_service = ObjectService()

@@ -18,7 +18,8 @@ class Orchestrator:
         Orchestrator
         """
         self.__logger = Logger.get_logger("Orchestrator")
-        self.__steps: List[AbstractStep] = [DeadCodeStep(),   DatabaseFlatteningStep(), CommunityCreationStep()]
+        self.__steps: List[AbstractStep] = [DeadCodeStep(),  TransactionalStep(), DatabaseFlatteningStep(), CommunityCreationStep()]
+        # self.__steps: List[AbstractStep] = [CommunityCreationStep()]
 
     def launch(self):
         """
@@ -32,4 +33,3 @@ class Orchestrator:
                 self.__logger.info("Step {} has been completed.".format(i.get_name()))
             except Exception as e:
                 self.__logger.error("Failed on step with name : {}".format(i.get_name()), e)
-                raise RuntimeError("Process failed on step {}".format(i.get_name()))

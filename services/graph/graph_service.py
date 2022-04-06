@@ -1,3 +1,7 @@
+from typing import List
+
+from neo4j.graph import Relationship
+
 from db.neo4j.neo4j_al import Neo4jAl
 from utils.query.query_loader import QueryLoader
 
@@ -49,3 +53,17 @@ class GraphService:
 
         # Execute
         self.__neo4j_al.execute(query, parameters)
+
+    def get_graph_relationships(self, application: str, object_property: str, value: str) -> List[Relationship]:
+        """
+        Get the list of relationships of the graph
+        :param value: Value of the property to retrieve
+        :param object_property: Property to get
+        :param application: Name of the application
+        :return: The list of relationship
+        """
+        query = self.__query_service.get_query("gds_graph", "get_graph_relationships")
+        query.replace_anchors({"APPLICATION": application,
+                               "PROPERTY_NAME": object_property})
+
+        return self.__neo4j_al.execute(query, {"propValue": value})

@@ -1,0 +1,14 @@
+caller_callee_weight:
+
+  proc_to_proc:
+    src_type: SQL Server Procedure
+    end_type: SQL Server Procedure
+    value: 3
+
+  proc_to_proc_1:
+    src_type: SQL Server Procedure
+    end_type: SQL Server Procedure
+    rel_name: use
+    regex: (select)
+    value: 3
+

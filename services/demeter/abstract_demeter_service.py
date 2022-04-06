@@ -3,7 +3,7 @@ from services.imaging.abstract_imaging_service import AbstractImagingService
 
 class AbstractDemeterService(AbstractImagingService):
     """
-        Abstract service for demeter
+        Abstract services for demeter
     """
 
     def __init__(self):
