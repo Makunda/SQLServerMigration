@@ -4,16 +4,16 @@ link_weight:
     value: 1
   use:
     rel_name: use
-    value: 2
+    value: 1
   select:
     rel_name: use
     regex: (select)
-    value: 3
+    value: 1
   delete:
     rel_name: use
     regex: (delete)
-    value: 3
+    value: 1
   udpdate:
     rel_name: use
     regex: (delete)
-    value: 3
+    value: 1

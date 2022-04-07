@@ -1,8 +1,11 @@
 slq_migration:
   sql_level:
-    - SQL Server Procedure
-    - SQL Server Function
-    - SQL Server Table
-    - SQL Server View
-    - SQL Server Trigger
-    - SQL Server SQL Script
+    - DB2 Procedure
+    - DB2 Function
+    - DB2 Table
+    - DB2 View
+    - DB2 Trigger
+    - DB2 SQL Script
+    - Cobol Program
+    - Cobol Program Batch
+    - Cobol Program TP

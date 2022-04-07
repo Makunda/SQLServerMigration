@@ -8,7 +8,7 @@ from services.imaging.abstract_imaging_service import AbstractImagingService
 
 class TransactionService(AbstractImagingService):
     """
-    Transaction service
+    Transaction services
     """
 
     def get_objects_not_in_transaction_by_levels(self, application: str, types: List[str]) -> List[Node]:
@@ -35,6 +35,18 @@ class TransactionService(AbstractImagingService):
 
         # Execute
         return self.neo4j_al.execute(query)
+
+    def get_all_transactions_with_minimum_object(self, application: str, min_size: int) -> List[Node]:
+            """
+            Get all transactions in a particular application
+            :param application: Name of the application
+            :return:
+            """
+            query = self.query_service.get_query("transactions", "get_all_transaction_with_min_objects")
+            query.replace_anchors({"APPLICATION": application})
+
+            # Execute
+            return self.neo4j_al.execute(query, {"minSize": min_size})
 
     def get_objects_in_transaction_by_levels(self, application: str, types: List[str]) -> List[Node]:
         """
@@ -64,11 +76,9 @@ class TransactionService(AbstractImagingService):
         # Execute
         return self.neo4j_al.execute(query, {"property_value": property_value})
 
-    def get_prop_value_list_in_transaction(self, application:str, property_name: str,
-                                                node: Node) -> List[any]:
+    def get_prop_value_list_in_transaction(self, node: Node, property_name: str) -> List[any]:
         """
         Get the list of property value in a specific transaction
-        :param application: Name of the application
         :param property_name: Name of the property
         :param node: Transaction node
         :return: The list of value
@@ -76,8 +86,8 @@ class TransactionService(AbstractImagingService):
         if node is None:
             raise RuntimeError("Cannot get the property value list of a 'None' node.")
 
-        query = self.query_service.get_query("transactions", "get_transaction_including_objects_with_property")
-        query.replace_anchors({"APPLICATION": application, "PROPERTY_NAME": property_name})
+        query = self.query_service.get_query("transactions", "get_prop_value_list_in_transaction")
+        query.replace_anchors({"PROPERTY_NAME": property_name})
 
         # Execute
         return self.neo4j_al.execute(query, {"TransactionId": node.id})
@@ -109,7 +119,7 @@ class TransactionService(AbstractImagingService):
         query = self.query_service.get_query("transactions", "get_transaction_complexity")
 
         # Execute
-        return self.neo4j_al.execute(query, {"IdTransaction": node.id, "ToGrabComplexity": complexity_type})
+        return self.neo4j_al.execute(query, {"TransactionId": node.id, "ToGrabComplexity": complexity_type})
 
     def get_transaction_starting_point(self, node: Node) -> str:
         """
@@ -123,7 +133,7 @@ class TransactionService(AbstractImagingService):
         query = self.query_service.get_query("transactions", "get_transaction_starting_point")
 
         # Execute
-        return self.neo4j_al.execute(query, {"IdTransaction": node.id})
+        return self.neo4j_al.execute(query, {"TransactionId": node.id})
 
     def get_transaction_end_points(self, node: Node) -> List[str]:
         """
@@ -137,7 +147,7 @@ class TransactionService(AbstractImagingService):
         query = self.query_service.get_query("transactions", "get_transaction_end_points")
 
         # Execute
-        return self.neo4j_al.execute(query, {"IdTransaction": node.id})
+        return self.neo4j_al.execute(query, {"TransactionId": node.id})
 
     def node_to_imaging_transaction(self, node: Node) -> ImagingTransaction:
         """

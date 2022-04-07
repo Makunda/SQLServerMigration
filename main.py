@@ -1,6 +1,9 @@
+from api.flask_app import flask_application
 from logger import Logger
 from migration.orchestrator import Orchestrator
+from utils.configuration.port_configuration import PortConfiguration
 
+configuration = PortConfiguration()
 
 def main():
     """
@@ -16,4 +19,5 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    flask_application.run(host="0.0.0.0", port=configuration.get_rest_api_port())
+    #main()

@@ -12,4 +12,4 @@ class ComplexEncoder(json.JSONEncoder):
 class JSONUtils:
     @staticmethod
     def serialize(document):
-        return json.dumps(document.repr_json(), cls=ComplexEncoder)
+        return json.dumps(document, cls=ComplexEncoder)

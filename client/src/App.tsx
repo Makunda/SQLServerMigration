@@ -1,12 +1,14 @@
 import React from 'react';
 import logo from './resources/images/logo.svg';
 import './resources/css/App.css';
+import "@react-sigma/core/lib/react-sigma.min.css"
+import {WelcomeComponent} from "./components/default/WelcomeComponent";
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
+        <WelcomeComponent></WelcomeComponent>
         <p>
           Edit <code>src/App.tsx</code> and save to reload.
         </p>

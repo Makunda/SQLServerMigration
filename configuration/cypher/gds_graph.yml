@@ -19,6 +19,19 @@ gds_graph:
     return:
       - relationship
 
+  get_graph_nodes:
+    query: >
+      MATCH (n:`$$APPLICATION$$`)
+      WHERE n.`$$PROPERTY_NAME$$` = $propValue
+      RETURN n as node
+    params:
+      - propValue
+    anchors:
+      - APPLICATION
+      - PROPERTY_NAME
+    return:
+      - node
+
   create_graph_by_property:
     query: >
       WITH "MATCH (n:`$$APPLICATION$$`) WHERE n.`$$PROPERTY_NAME$$`= " + $propValue + " RETURN id(n) AS id" as req1,
