@@ -1,11 +1,18 @@
-from api.flask_app import flask_application
+import asyncio
+
+from api.webserver import run_webserver
 from logger import Logger
 from migration.orchestrator import Orchestrator
 from utils.configuration.port_configuration import PortConfiguration
 
 configuration = PortConfiguration()
 
-def main():
+HOST = "0.0.0.0"
+PORT_WEB = configuration.get_rest_api_port()
+PORT_WEBSOCKETS = configuration.get_websockets_port()
+
+
+async def main():
     """
     Main function
     :return: None
@@ -14,10 +21,13 @@ def main():
     logger = Logger.get_logger("Main Logic")
     logger.info("Starting program...")
 
+    # Launch demons
     orchestrator = Orchestrator()
-    orchestrator.launch()
+    # orchestrator.launch()
+
+    # Launch web servers
+    run_webserver(HOST, PORT_WEB)
 
 
 if __name__ == '__main__':
-    flask_application.run(host="0.0.0.0", port=configuration.get_rest_api_port())
-    #main()
+    asyncio.run(main())

@@ -2,8 +2,8 @@ from typing import List
 
 from neo4j.graph import Node
 
+from logger import Logger
 from services.imaging.abstract_imaging_service import AbstractImagingService
-from utils.logger import Logger
 
 
 class ApplicationUnnamedService(AbstractImagingService):

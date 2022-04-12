@@ -4,7 +4,6 @@ from typing import List
 from neo4j.graph import Node
 
 from services.imaging.abstract_imaging_service import AbstractImagingService
-from services.imaging.abstract_named_service import AbstractNamedImagingService
 
 
 class DocumentItUnnamedService(AbstractImagingService):

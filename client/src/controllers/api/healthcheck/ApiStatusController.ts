@@ -4,7 +4,7 @@
 import ProxyAxios from "../../../utils/api/ProxyAxios";
 import Status from "../../../interfaces/healthcheck/status";
 
-export default class StatusController {
+export default class ApiStatusController {
 
     /**
      * Get the status of the API

@@ -1,17 +1,1 @@
 Name,Full Name,Object Type,Internal Type,Level,File Path,Line of code,Cyclomatic Complexity,Essential Complexity
-AccountTimeOffSetting,EHC.Account.AccountTimeOffSetting,SQL Server Table,SQLScriptTable,SQL Server Table,C:\ProgramData\CAST\AipConsole\AipNode\deploy\Project Modern Cardinal\main_sources\DDL\EHC.sql,25,0,0
-ReliusPlanEmployeeLoan,EHC.Relius.ReliusPlanEmployeeLoan,SQL Server Table,SQLScriptTable,SQL Server Table,C:\ProgramData\CAST\AipConsole\AipNode\deploy\Project Modern Cardinal\main_sources\DDL\EHC.sql,20,0,0
-ReliusPlanEmployee,EHC.Relius.ReliusPlanEmployee,SQL Server Table,SQLScriptTable,SQL Server Table,C:\ProgramData\CAST\AipConsole\AipNode\deploy\Project Modern Cardinal\main_sources\DDL\EHC.sql,32,0,0
-Tmp_Field,EHC.Application.Tmp_Field,SQL Server Table,SQLScriptTable,SQL Server Table,C:\ProgramData\CAST\AipConsole\AipNode\deploy\Project Modern Cardinal\main_sources\Configurations-Scripts-Sources\EHC.Application\Data\Databases\Core\Refactor\Application\Field_CanonicalName_AddColumn_v40.sql,17,0,0
-AccountTimeOffAccrualSetting,EHC.Account.AccountTimeOffAccrualSetting,SQL Server Table,SQLScriptTable,SQL Server Table,C:\ProgramData\CAST\AipConsole\AipNode\deploy\Project Modern Cardinal\main_sources\DDL\EHC.sql,15,0,0
-Tmp_View,EHC.Application.Tmp_View,SQL Server Table,SQLScriptTable,SQL Server Table,C:\ProgramData\CAST\AipConsole\AipNode\deploy\Project Modern Cardinal\main_sources\Configurations-Scripts-Sources\EHC.Application\Data\Databases\Core\Refactor\Application\View_CanonicalName_AddColumn_v40.sql,16,0,0
-ProcessType,EHC.Onboarding.ProcessType,SQL Server Table,SQLScriptTable,SQL Server Table,C:\ProgramData\CAST\AipConsole\AipNode\deploy\Project Modern Cardinal\main_sources\DDL\EHC.sql,13,0,0
-AccountHolidaySetting,EHC.Account.AccountHolidaySetting,SQL Server Table,SQLScriptTable,SQL Server Table,C:\ProgramData\CAST\AipConsole\AipNode\deploy\Project Modern Cardinal\main_sources\DDL\EHC.sql,19,0,0
-AccountCampaignStat,EHC.Account.AccountCampaignStat,SQL Server Table,SQLScriptTable,SQL Server Table,C:\ProgramData\CAST\AipConsole\AipNode\deploy\Project Modern Cardinal\main_sources\DDL\EHC.sql,16,0,0
-AccountStatusChangeLog,EHC.Account.AccountStatusChangeLog,SQL Server Table,SQLScriptTable,SQL Server Table,C:\ProgramData\CAST\AipConsole\AipNode\deploy\Project Modern Cardinal\main_sources\DDL\EHC.sql,15,0,0
-AcaConfiguration,EHC.Application.AcaConfiguration,SQL Server Table,SQLScriptTable,SQL Server Table,C:\ProgramData\CAST\AipConsole\AipNode\deploy\Project Modern Cardinal\main_sources\DDL\EHC.sql,14,0,0
-DisplayStaging,EHC.Application.DisplayStaging,SQL Server Table,SQLScriptTable,SQL Server Table,C:\ProgramData\CAST\AipConsole\AipNode\deploy\Project Modern Cardinal\main_sources\DDL\EHC.sql,10,0,0
-SwipeClock_SSO,EHC.Account.SwipeClock_SSO,SQL Server Table,SQLScriptTable,SQL Server Table,C:\ProgramData\CAST\AipConsole\AipNode\deploy\Project Modern Cardinal\main_sources\DDL\EHC.sql,16,0,0
-TempUserLoginsByYear,EHC.dbo.TempUserLoginsByYear,SQL Server Table,SQLScriptTable,SQL Server Table,C:\ProgramData\CAST\AipConsole\AipNode\deploy\Project Modern Cardinal\main_sources\DDL\EHC.sql,4,0,0
-MillenniumJobDependency,EHC.Reporting.MillenniumJobDependency,SQL Server Table,SQLScriptTable,SQL Server Table,C:\ProgramData\CAST\AipConsole\AipNode\deploy\Project Modern Cardinal\main_sources\DDL\EHC.sql,12,0,0
-LocalTax,EHC.Application.LocalTax,SQL Server Table,SQLScriptTable,SQL Server Table,C:\ProgramData\CAST\AipConsole\AipNode\deploy\Project Modern Cardinal\main_sources\DDL\EHC.sql,12,0,0

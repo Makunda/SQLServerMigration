@@ -81,9 +81,7 @@ class GraphSpreadConfiguration(metaclass=SingletonMeta):
         """
         records = self.__yml_configuration["caller_callee_weight"]
         for title in records.keys():
-            print(title)
             elem = records[title]
-            print(elem)
             try:
                 formatted_rec = CallerCalleeWeightInput(
                     str(self.__get_value(elem, "src_type")),

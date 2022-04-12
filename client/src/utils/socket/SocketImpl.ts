@@ -1,9 +1,10 @@
 import {io, Socket} from "socket.io-client";
-import {ClientToServerEvents, ServerToClientEvents} from "../../interfaces/socket/SocketListener";
 import SocketData from "../../interfaces/socket/SocketData";
+import Logger from "../logging/logger";
 
 // Call back type
 type socketCallBack = (...args: any[]) => void
+type responseCallBack = (...args: any[]) => SocketData<any>
 
 /**
  * Wrapper of the Socket IO Class
@@ -12,6 +13,7 @@ export default class  SocketImpl {
 
     private socket: Socket<any, any>;
     private namespace: string;
+    private logger: Logger = Logger.getLogger("Socket Implementation");
 
     /**
      * Declare an action when receiving a message
@@ -19,7 +21,10 @@ export default class  SocketImpl {
      * @param callback
      */
     public on(message: string, callback: socketCallBack) : SocketImpl {
-        this.socket.on(message, callback)
+        this.socket.on(message, (data: any) => {
+            this.logger.info(`Socket response for event: '${message}'. Data:`, data)
+            callback(data);
+        })
         return this;
     }
 
@@ -49,13 +54,22 @@ export default class  SocketImpl {
         return this;
     }
 
+    private toString<T>(data: SocketData<T>) {
+        return JSON.stringify(data);
+    }
+
     /**
      * Emit a message on the current socket
      * @param message Message to send
      * @param data Data to pass
+     * @param callback
      */
-    public emit<T>(message: string, data: SocketData<T>) : SocketImpl {
-        this.socket.emit(message, data)
+    public emit<T>(message: string, data: SocketData<T>, callback: socketCallBack | null = null) : SocketImpl {
+        this.logger.info(`Emitting on '${this.namespace}'. Message: '${message}'. Data:`, data);
+
+        if(callback == null ) this.socket.emit(message, data);
+        else this.socket.emit(message, data, callback);
+
         return this;
     }
 
@@ -71,13 +85,32 @@ export default class  SocketImpl {
     }
 
     /**
+     * Open the socket
+     */
+    public open() {
+        this.socket.open();
+    }
+
+    /**
+     * Get the status of the Socket
+     */
+    public getStatus() : boolean {
+        return this.socket.active;
+    }
+
+    /**
      * Constructor
-     * @param namespace
+     * @param namespace Namespace to use
      * @param parameters
      */
     public constructor(namespace: string, parameters: any = null) {
         if(parameters == null) parameters = {};
         this.namespace = namespace;
-        this.socket = io(namespace, parameters);
+
+        this.logger.info(`Building new socket for ${namespace}.`)
+        this.socket = io(namespace, {
+            auth: {
+                'test': 'test'
+            }});
     }
 }

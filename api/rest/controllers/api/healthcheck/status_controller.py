@@ -1,7 +1,7 @@
 from flask import Blueprint
 
-from api.interfaces.api_response import ApiResponse
-from api.interfaces.healthcheck.status import Status
+from api.rest.interfaces.api_response import ApiResponse
+from api.rest.interfaces.healthcheck.status import Status
 
 status_controller = Blueprint('status', __name__,
                               url_prefix='/status')

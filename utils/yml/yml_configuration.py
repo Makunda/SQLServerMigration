@@ -27,7 +27,6 @@ class YMLConfiguration(metaclass=SingletonMeta):
 
         # List and load files
         files = self.__list_file()
-        self.__logger.info("{0} .yml files were discovered.".format(len(files)))
 
         self.__configuration = {}
         for f in files:
@@ -41,7 +40,6 @@ class YMLConfiguration(metaclass=SingletonMeta):
             except Exception as e:
                 self.__logger.warn("Invalid YML configuration file {0}. File will  be skipped.".format(f))
 
-        self.__logger.info("{0} yaml sections loaded.".format(len(self.__configuration)))
 
     def __list_file(self) -> List[str]:
         """

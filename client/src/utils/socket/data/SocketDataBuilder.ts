@@ -13,24 +13,27 @@ export default class SocketDataBuilder<T> {
      * Set data
      * @param data
      */
-    public setData(data: T) {
+    public setData(data: T) : SocketDataBuilder<T>{
         this.data = data;
+        return this;
     }
 
     /**
      * Set one error
      * @param error Error to include
      */
-    public setError(error: string) {
+    public setError(error: string) : SocketDataBuilder<T> {
         this.errors.push(error);
+        return this;
     }
 
     /**
      * Set multiple errors
      * @param errors
      */
-    public setErrors(errors: string[]) {
+    public setErrors(errors: string[]): SocketDataBuilder<T> {
         this.errors = errors;
+        return this;
     }
 
     public build() : SocketDataImpl<T> {

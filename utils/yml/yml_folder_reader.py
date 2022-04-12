@@ -83,7 +83,6 @@ class YMLFolderReader:
             except Exception as e:
                 self.__logger.error("Sections {0} has been ignored.".format(section_name), e)
 
-        self.__logger.info("Sections {0} has been discovered.".format(loaded_sections))
 
     def get_full_content(self) -> Any:
         """
@@ -92,7 +91,6 @@ class YMLFolderReader:
         """
         # List all the files
         files = self.__list_file()
-        self.__logger.info("{} files discovered at '{}'.".format(len(files), self.__query_folder))
 
         # List all content
         for f in files:

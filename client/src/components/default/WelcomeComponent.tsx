@@ -1,6 +1,6 @@
 import React from "react";
 import Status from "../../interfaces/healthcheck/status";
-import StatusController from "../../controllers/api/healthcheck/StatusController";
+import ApiStatusController from "../../controllers/api/healthcheck/ApiStatusController";
 
 
 type CustomState = {
@@ -11,11 +11,11 @@ type CustomState = {
 
 export class WelcomeComponent extends React.Component<{}, CustomState> {
 
-    private statusController: StatusController;
+    private statusController: ApiStatusController;
 
     constructor(props: any) {
         super(props);
-        this.statusController = new StatusController();
+        this.statusController = new ApiStatusController();
 
         this.state = {
             isLoaded: false,
